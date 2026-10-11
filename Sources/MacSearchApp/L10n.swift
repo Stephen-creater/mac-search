@@ -38,6 +38,7 @@ enum L10n {
         }
     }
     private static let strings: [String: (String, String)] = [
+        "settings.menuBarIcon": ("显示菜单栏图标", "Show Menu Bar Icon"),
         "local.updateHint": ("本地定制版 · 更新由本项目源码构建。", "Local edition · Updates are built from this project source."),
         "source.offline": ("未连接", "Not connected"),
         "source.unavailable": ("「%@」未连接，连接后才能打开。", "“%@” is not connected. Connect it to open this file."),

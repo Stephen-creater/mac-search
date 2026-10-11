@@ -7,6 +7,8 @@ import MacSearchCore
 final class SettingsModel: ObservableObject {
     @Published private(set) var language: AppLanguage
     @Published var launchAtLogin: Bool
+    @Published var showMenuBarIcon: Bool
+    var onMenuBarVisibilityChange: ((Bool) -> Void)?
     let update: UpdateManager
     private var languageObserver: NSObjectProtocol?
     private let languageDefaults: UserDefaults
@@ -50,6 +52,7 @@ final class SettingsModel: ObservableObject {
         launchAtLogin = snapshot ? false : SMAppService.mainApp.status == .enabled
         if !snapshot { SettingsPreferences.register() }
         let defaults = UserDefaults.standard
+        showMenuBarIcon = !snapshot && defaults.bool(forKey: "showMenuBarIcon")
         indexDependencyDirs = !snapshot && defaults.bool(forKey: "indexDependencyDirs")
         indexPackageContents = !snapshot && defaults.bool(forKey: "indexPackageContents")
         indexUserLibrary = !snapshot && defaults.bool(forKey: "indexUserLibrary")
@@ -72,6 +75,11 @@ final class SettingsModel: ObservableObject {
     var contentHeight: CGFloat {
         min(600, 880 - (granted ? 30 : 0) + CGFloat(max(0, excludedPaths.count - 1)) * 32
             + (loginError == nil ? 0 : 40) + (shortcutError == nil ? 0 : 28))
+    }
+    func setMenuBarIcon(_ visible: Bool) {
+        showMenuBarIcon = visible
+        if !snapshot { UserDefaults.standard.set(visible, forKey: "showMenuBarIcon") }
+        onMenuBarVisibilityChange?(visible)
     }
     func startRefreshing() {
         refresh(); timer?.invalidate()
@@ -260,6 +268,7 @@ private struct SettingsForm: View {
                 } else {
                     UpdateSettingsRow(update: model.update).id(model.language)
                 }
+                Toggle(L10n.text("settings.menuBarIcon"), isOn: Binding(get: { model.showMenuBarIcon }, set: model.setMenuBarIcon))
                 VStack(alignment: .leading, spacing: 5) {
                     Toggle(L10n.text("settings.login"), isOn: Binding(get: { model.launchAtLogin }, set: model.setLogin))
                     if let error = model.loginError { hint(error).foregroundStyle(.red) }

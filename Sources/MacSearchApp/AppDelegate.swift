@@ -126,6 +126,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func buildMenu(keyCode: UInt32, modifiers: UInt32) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         let image = Theme.symbol("magnifyingglass", size: 16, weight: .regular); image.isTemplate = true
+        statusItem?.isVisible = UserDefaults.standard.bool(forKey: "showMenuBarIcon")
         statusItem?.button?.image = image
         statusItem?.menu = makeMenu(keyCode: keyCode, modifiers: modifiers, hotKeyAvailable: hotKey != nil)
     }
@@ -192,6 +193,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 guard let self else { return }
                 self.manager?.updateConfig(SettingsPreferences.indexConfig(limited: self.limited))
             }
+            model.onMenuBarVisibilityChange = { [weak self] visible in self?.statusItem?.isVisible = visible }
             model.onPinyinChange = { [weak self] in self?.panel.searchController.startSearch(preserveSelection: true) }
             settingsController = SettingsWindowController(model: model, appExtension: appExtension)
         }
