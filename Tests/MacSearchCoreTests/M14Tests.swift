@@ -25,14 +25,14 @@ final class M14Tests: XCTestCase {
             (" \t/a/b.md\r\n", "/a/b.md"),
             ("'/a/b c.app'", "/a/b c.app"),
             ("\"/a/b c.app\"", "/a/b c.app"),
-            (#"'/a/Oil\' Find.app'"#, "/a/Oil' Find.app"),
+            (#"'/a/Mac\' Search.app'"#, "/a/Mac' Search.app"),
             ("file:///Users/a/b%20c.md", "/Users/a/b c.md"),
             ("file://localhost/Users/a/b%20c.md", "/Users/a/b c.md"),
             ("file:///a/%E9%A1%B9%E7%9B%AE.md", "/a/项目.md"),
             ("file:///a/b%ZZ.md", "file:///a/b%ZZ.md"),
             ("file:///a/b%FF.md", "file:///a/b%FF.md"),
             ("file://localhost", "file://localhost"),
-            ("/a/Oil\\ Find.app", "/a/Mac Search.app"),
+            ("/a/Mac\\ Search.app", "/a/Mac Search.app"),
             (#"/a/\(b\)\'c\"\&\;\[d\].md"#, #"/a/(b)'c"&;[d].md"#),
             (#"/a/b\d\q.md"#, #"/a/b\d\q.md"#),
             ("/a/main.swift:10:5", "/a/main.swift"),
@@ -55,11 +55,11 @@ final class M14Tests: XCTestCase {
             XCTAssertEqual(Query.normalizePaste(input), expected, input)
             XCTAssertEqual(Query.parse(input).raw, expected.precomposedStringWithCanonicalMapping, input)
         }
-        let path = Query.parse(" \t'/a/Oil\\ Find.app'\n", pathExists: { _ in true })
+        let path = Query.parse(" \t'/a/Mac\\ Search.app'\n", pathExists: { _ in true })
         XCTAssertEqual(path.raw, "/a/Mac Search.app")
         XCTAssertEqual(path.clauses.count, 1)
         guard case .path(let components) = path.clauses[0].alternatives[0].matcher else { return XCTFail("Expected one path atom") }
-        XCTAssertEqual(components.map { String(decoding: $0, as: UTF8.self) }, ["", "a", "oil find.app"])
+        XCTAssertEqual(components.map { String(decoding: $0, as: UTF8.self) }, ["", "a", "mac search.app"])
         XCTAssertEqual(Query.parse("\"a b\" c").clauses.count, 2)
         XCTAssertEqual(Query.parse("\"/a/b c\" \"d/e\"").clauses.count, 2)
         XCTAssertEqual(Query.parse("\"/a/b c\" !readme").clauses.count, 2)
