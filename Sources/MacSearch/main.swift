@@ -1,0 +1,2 @@
+import MacSearchApp
+Application.run()

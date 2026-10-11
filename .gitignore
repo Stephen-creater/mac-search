@@ -1,0 +1,9 @@
+.build/
+build/
+.swiftpm/
+.DS_Store
+*.macsearch
+*.log
+.env*
+__pycache__/
+*.pyc

@@ -1,0 +1,17 @@
+name: macOS CI
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  build-and-test:
+    runs-on: macos-14
+    env:
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: swift --version
+      - run: swift test
+      - run: scripts/build-app.sh
+      - run: python3 scripts/smoke-test.py
